@@ -86,3 +86,10 @@ To use the plugin you have to add the plugin to the GAZEBO_PLUGIN_PATH
 ```bash
 export GAZEBO_PLUGIN_PATH=$HOME:~/uwb_gazebo_plugin/build/uwb_gazebo_plugin:$GAZEBO_PLUGIN_PATH
 ```
+
+Remember to source the [rosmsgs](https://github.com/GiacomoCorradini/rosmsgs)
+
+```bash
+cd ~/rosmsgs
+source install/setup.bash
+```
