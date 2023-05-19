@@ -30,7 +30,7 @@ SOFTWARE.
 #include <gazebo_ros/node.hpp>
 #include <boost/bind.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include "gtec_rosmsgs/msg/ranging.hpp"
+#include "rosmsgs/msg/ranging.hpp"
 #include "geometry_msgs/msg/pose_with_covariance_stamped.hpp"
 #include "visualization_msgs/msg/marker_array.hpp"
 #include "visualization_msgs/msg/marker.hpp"
@@ -664,7 +664,7 @@ namespace gazebo
             this->SetUpdateRate(_sdf->Get<double>("update_rate"));
             this->nlosSoftWallWidth = 0.25;
             this->tagZOffset = 0;
-            this->tagId = 0;
+            this->tagId = std::string("0x00");;
             this->maxDBDistance = 14;
             this->stepDBDistance = 0.1;
             this->allBeaconsAreLOS = false;
@@ -696,9 +696,10 @@ namespace gazebo
                 std::string tag_link = _sdf->Get<std::string>("tag_link");
                 this->tagLink = _parent->GetLink(tag_link);
 
-                RCLCPP_INFO(node->get_logger(), "Parent name: %s ChildCount: %d", _parent->GetName().c_str(), _parent->GetChildCount());
+
                 if (this->tagLink == NULL)
                 {
+                    RCLCPP_INFO(node->get_logger(), "Parent name: %s ChildCount: %d", _parent->GetName().c_str(), _parent->GetChildCount());
                     std::vector<physics::LinkPtr> links = _parent->GetLinks();
                     for (int i = 0; i < links.size(); ++i)
                     {
@@ -706,6 +707,8 @@ namespace gazebo
                     }
                     RCLCPP_INFO(node->get_logger(), "UWB Plugin Tag link Is NULL We use The Parent As Reference");
                     this->useParentAsReference = true;
+                } else {
+                    RCLCPP_INFO(node->get_logger(), "Parent name: %s tag_link: %s", _parent->GetName().c_str(), this->tagLink->GetName().c_str());
                 }
             }
 
@@ -735,7 +738,7 @@ namespace gazebo
             RCLCPP_INFO(node->get_logger(), "GTEC UWB Plugin Anchors Position Publishing in %s", topicAnchors.c_str());
 
             // ros::NodeHandle n;
-            this->gtecUwbPub = node->create_publisher<gtec_rosmsgs::msg::Ranging>(topicRanging, 1000);
+            this->gtecUwbPub = node->create_publisher<rosmsgs::msg::Ranging>(topicRanging, 1000);
             this->gtecAnchors = node->create_publisher<visualization_msgs::msg::MarkerArray>(topicAnchors, 1000);
 
             this->firstRay = boost::dynamic_pointer_cast<physics::RayShape>(
@@ -1167,7 +1170,7 @@ namespace gazebo
     private:
         physics::LinkPtr tagLink;
     private:
-        rclcpp::Publisher<gtec_rosmsgs::msg::Ranging>::SharedPtr gtecUwbPub;
+        rclcpp::Publisher<rosmsgs::msg::Ranging>::SharedPtr gtecUwbPub;
     private:
         rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr gtecAnchors;
     private:

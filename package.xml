@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>UWB_gazebo_plugin</name>
+  <name>uwb_gazebo_plugin</name>
   <version>1.0.0</version>
-  <description>The UWB_gazebo_plugin package. Includes some plugins for Gazebo</description>
+  <description>The uwb_gazebo_plugin package. Includes some plugins for Gazebo</description>
   <author email="valentin.barral@udc.es">Valentin Barral</author>
   <maintainer email="corra981@gmail.com">giacomo</maintainer>
   <license>MIT</license>
@@ -13,7 +13,7 @@
   <depend>pluginlib</depend>
   <depend>gazebo_ros</depend>
   <depend>rclcpp</depend>
-  <depend>gtec_rosmsgs</depend>
+  <depend>rosmsgs</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

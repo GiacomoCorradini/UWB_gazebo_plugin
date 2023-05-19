@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(UWB_gazebo_plugin)
+project(uwb_gazebo_plugin)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -16,7 +16,7 @@ find_package(rclcpp REQUIRED)
 #find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(gazebo_ros REQUIRED)
-find_package(gtec_rosmsgs REQUIRED)
+find_package(rosmsgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(gazebo_ros_pkgs REQUIRED)
@@ -31,20 +31,12 @@ ament_target_dependencies(gtec_uwb_plugin
   gazebo_ros_pkgs
   std_msgs
   visualization_msgs
-  gtec_rosmsgs
+  rosmsgs
   tf2
   gazebo_ros
 )
 
-install(
-  TARGETS gtec_uwb_plugin
-  DESTINATION lib/${PROJECT_NAME}
-)
-
-# add_library(gtec_uwb_plugin src/UwbPlugin.cpp)
-# target_link_libraries(gtec_uwb_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
-# add_dependencies(gtec_uwb_plugin ${catkin_EXPORTED_TARGETS})
-
+# NOT IMPLEMENTED {
 # add_library(gtec_magnetic_distortion_plugin src/MagneticDistortionPlugin.cpp)
 # target_link_libraries(gtec_magnetic_distortion_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
 # add_dependencies(gtec_magnetic_distortion_plugin ${catkin_EXPORTED_TARGETS})
@@ -55,13 +47,13 @@ install(
 
 # add_library(gtec_tag_pos_publisher_plugin src/TagPosPublisherPlugin.cpp)
 # target_link_libraries(gtec_tag_pos_publisher_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES})
-# add_dependencies(gtec_tag_pos_publisher_plugin ${catkin_EXPORTED_TARGETS})
+# add_dependencies(gtec_tag_pos_publisher_plugin ${catkin_EXPORTED_TARGETS}
+# }
 
-# ament_package(
-#   DEPENDS
-#     rclcpp
-#     gtec_rosmsgs
-#     gazebo_ros
-# )
+
+install(
+  TARGETS gtec_uwb_plugin
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 ament_package()
