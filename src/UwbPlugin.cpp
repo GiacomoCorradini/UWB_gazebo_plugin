@@ -664,7 +664,7 @@ namespace gazebo
             this->SetUpdateRate(_sdf->Get<double>("update_rate"));
             this->nlosSoftWallWidth = 0.25;
             this->tagZOffset = 0;
-            this->tagId = std::string("0x00");;
+            this->tagId = std::string("0x00");
             this->maxDBDistance = 14;
             this->stepDBDistance = 0.1;
             this->allBeaconsAreLOS = false;
@@ -678,7 +678,7 @@ namespace gazebo
 
             if (_sdf->HasElement("tag_id"))
             {
-                this->tagId = _sdf->Get<double>("tag_id");
+                this->tagId = _sdf->Get<std::string>("tag_id");
             }
 
             if (_sdf->HasElement("tag_z_offset"))
@@ -823,6 +823,8 @@ namespace gazebo
 
                 visualization_msgs::msg::MarkerArray markerArray;
                 visualization_msgs::msg::MarkerArray interferencesArray;
+
+                int anchor_i = 0;
 
                 physics::Model_V models = this->world->Models();
                 for (physics::Model_V::iterator iter = models.begin(); iter != models.end(); ++iter)
@@ -1066,23 +1068,25 @@ namespace gazebo
 
                             if (losType!=NLOS)
                             {
-                                // gtec_msgs::msg::Ranging ranging_msg;
-                                // ranging_msg.anchorId = aid;
-                                // ranging_msg.tagId = this->tagId;
-                                // ranging_msg.range = rangingValue;
-                                // ranging_msg.seq = this->sequence;
-                                // ranging_msg.rss = powerValue;
-                                // ranging_msg.errorEstimation = 0.00393973;
-                                // this->gtecUwbPub->publish(ranging_msg);
+                                rosmsgs::msg::Ranging ranging_msg;
+                                ranging_msg.anchor_id = aidStr;
+                                ranging_msg.tag_id = this->tagId;
+                                ranging_msg.range = rangingValue;
+                                ranging_msg.seq = this->sequence;
+                                ranging_msg.rss = powerValue;
+                                ranging_msg.error_estimation = 0.00393973;
+                                this->gtecUwbPub->publish(ranging_msg);
                             }
                         }
 
                         visualization_msgs::msg::Marker marker;
                         marker.header.frame_id = "world";
-                        marker.header.stamp = rclcpp::Time();
-                        marker.id = aid;
+                        marker.header.stamp = node->now();
+                        marker.id = anchor_i;
+                        anchor_i++;
                         marker.type = visualization_msgs::msg::Marker::CYLINDER;
                         marker.action = visualization_msgs::msg::Marker::ADD;
+                        marker.lifetime.sec = 5;
                         marker.pose.position.x = anchorPose.Pos().X();
                         marker.pose.position.y = anchorPose.Pos().Y();
                         marker.pose.position.z = anchorPose.Pos().Z();
@@ -1184,7 +1188,7 @@ namespace gazebo
     private:
         bool allBeaconsAreLOS;
     private:
-        int tagId;
+        std::string tagId;
     private:
         bool useParentAsReference;
     private:
