@@ -61,6 +61,8 @@ namespace gazebo
     class UwbPlugin : public ModelPlugin
     {
 
+    public :
+
         double rangingStd[141][3] =
         {
             {31.513, -12.192,  22.182},
@@ -654,69 +656,72 @@ namespace gazebo
         };
 
         /// \brief Constructor
-        public: UwbPlugin();
+        UwbPlugin();
 
         /// \brief Destructor
-        public: virtual ~UwbPlugin();
+        virtual ~UwbPlugin();
 
-        /// \brief The load function is called by Gazebo when the plugin is inserted into simulation
-        /// \param[in] _model A pointer to the model that this plugin is attached to.
-        /// \param[in] _sdf A pointer to the plugin's SDF element.
-        public: void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf);
+        /// \brief Load the plugin
+        void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf);
 
-        /// \brief Update
-        public: void OnUpdate(const common::UpdateInfo &_info);
+        /// \brief Callback to be called at every simulation iteration
+        void OnUpdate(const common::UpdateInfo &_info);
         
-        public: void SetUpdateRate(double _rate);
+        /// \brief Set update rate
+        void SetUpdateRate(double _rate);
 
-        public: void Reset() override;
+        /// \brief Reset function
+        void Reset() override;
 
-        private: physics::ModelPtr model;
-
-        private: physics::WorldPtr world;
+    private : 
         
-        private: physics::RayShapePtr firstRay;
+        /// \brief Pointer to the link, model and world
+        physics::LinkPtr tagLink;
+        physics::ModelPtr model;
+        physics::WorldPtr world;
         
-        private: physics::RayShapePtr secondRay;
+        physics::RayShapePtr firstRay;
         
-        /// Event triggered when sensor updates
-        private: event::ConnectionPtr updateConnection;
+        physics::RayShapePtr secondRay;
         
-        private: common::Time updatePeriod;
+        /// \brief Pointer to the update event connection
+        event::ConnectionPtr updateConnection;
         
-        private: common::Time lastUpdateTime;
+        common::Time updatePeriod;
         
-        private: double tagZOffset;
+        /// \brief Keep track of the last update time
+        common::Time lastUpdateTime;
         
-        private: std::string anchorPrefix;
+        double tagZOffset;
         
-        private: physics::LinkPtr tagLink;
+        std::string anchorPrefix;
         
-        /// Publish for uwb message
-        private: rclcpp::Publisher<rosmsgs::msg::Ranging>::SharedPtr gtecUwbPub;
+        unsigned char sequence;
         
-        /// Publish for uwb message
-        private: rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr gtecAnchors;
+        double nlosSoftWallWidth;
         
-        private: unsigned char sequence;
+        double maxDBDistance;
         
-        private: double nlosSoftWallWidth;
+        double stepDBDistance;
         
-        private: double maxDBDistance;
+        bool allBeaconsAreLOS;
         
-        private: double stepDBDistance;
+        /// \brief Anchor unique ID
+        std::string tagId;
         
-        private: bool allBeaconsAreLOS;
+        bool useParentAsReference;
         
-        private: std::string tagId;
+        std::default_random_engine random_generator;
         
-        private: bool useParentAsReference;
+        /// \brief Publish for uwb message
+        rclcpp::Publisher<rosmsgs::msg::Ranging>::SharedPtr Uwb_Pub;
+        rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr Anchors_Pub;
         
-        private: std::default_random_engine random_generator;
-        
-        /// Node for ros communication
-        public: gazebo_ros::Node::SharedPtr node;
+        /// \brief Pointer to ROS node
+        gazebo_ros::Node::SharedPtr node;
+    
     };
-}
+
+} // namespace gazebo
 
 #endif // UWB_ROS_PLUGIN_HH

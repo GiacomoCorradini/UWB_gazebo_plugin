@@ -37,6 +37,7 @@ namespace gazebo
         this->updatePeriod = common::Time(0.0);
     }
 
+    /// Destructor
     UwbPlugin::~UwbPlugin()
     {
     }
@@ -52,13 +53,13 @@ namespace gazebo
         if (!rclcpp::ok())
         {
             RCLCPP_ERROR(node->get_logger(), (std::string("A ROS node for Gazebo has not been initialized, unable to load plugin. ")
-                                + std::string("Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)")).c_str());
+                                            + std::string("Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)")).c_str());
             return;
         }
 
         if (!_sdf->HasElement("update_rate"))
         {
-            RCLCPP_ERROR(node->get_logger(), "GTEC UWB Plugin needs the parameter: update_rate");
+            RCLCPP_ERROR(node->get_logger(), "UWB Plugin needs the parameter: update_rate");
         }
 
         this->model = _parent;
@@ -123,25 +124,19 @@ namespace gazebo
             this->anchorPrefix = "uwb_anchor";
         }
 
-        RCLCPP_INFO(node->get_logger(), "GTEC UWB Plugin is running. Tag %s", this->tagId.c_str());
-        RCLCPP_INFO(node->get_logger(), "GTEC UWB Plugin All parameters loaded");
+        // RCLCPP_INFO(node->get_logger(), "UWB Plugin is running. Tag %s", this->tagId.c_str());
+        // RCLCPP_INFO(node->get_logger(), "UWB Plugin All parameters loaded");
 
         this->lastUpdateTime = common::Time(0.0);
 
-        std::string topicRanging = "/gtec/toa/ranging";
-        std::string topicAnchors = "/gtec/toa/anchors";
+        std::string topicRanging = "/uwb_ranging";
+        std::string topicAnchors = "/uwb_anchors";
+  
+        this->Anchors_Pub = node->create_publisher<visualization_msgs::msg::MarkerArray>(topicAnchors, qos.get_publisher_qos(topicAnchors, rclcpp::SensorDataQoS().reliable()));     
+        this->Uwb_Pub = node->create_publisher<rosmsgs::msg::Ranging>(topicRanging, qos.get_publisher_qos(topicRanging, rclcpp::SensorDataQoS().reliable()));
 
-        // RCLCPP_INFO(node->get_logger(), "GTEC UWB Plugin Ranging Publishing in %s", topicRanging.c_str());
-
-        // RCLCPP_INFO(node->get_logger(), "GTEC UWB Plugin Anchors Position Publishing in %s", topicAnchors.c_str());
-
-        // ros::NodeHandle n;
-      
-        this->gtecAnchors = node->create_publisher<visualization_msgs::msg::MarkerArray>(topicAnchors, qos.get_publisher_qos(topicAnchors, rclcpp::SensorDataQoS().reliable()));     
-        this->gtecUwbPub = node->create_publisher<rosmsgs::msg::Ranging>(topicRanging, qos.get_publisher_qos(topicRanging, rclcpp::SensorDataQoS().reliable()));
-
-        RCLCPP_INFO(node->get_logger(), "Publishing on topic [%s]", this->gtecUwbPub->get_topic_name());
-        RCLCPP_INFO(node->get_logger(), "Publishing on topic [%s]", this->gtecAnchors->get_topic_name());
+        RCLCPP_INFO(node->get_logger(), "Publishing on topic [%s]", this->Uwb_Pub->get_topic_name());
+        RCLCPP_INFO(node->get_logger(), "Publishing on topic [%s]", this->Anchors_Pub->get_topic_name());
 
         this->firstRay = boost::dynamic_pointer_cast<physics::RayShape>(
                                 this->world->Physics()->CreateShape("ray", physics::CollisionPtr()));
@@ -161,7 +156,7 @@ namespace gazebo
         {
             this->lastUpdateTime = _info.simTime;
 
-
+            /// Pose of the tag
             ignition::math::Pose3d tagPose;
 
             if (!this->useParentAsReference)
@@ -178,9 +173,9 @@ namespace gazebo
             ignition::math::Vector3d currentTagPose(tagPose.Pos());
 
             tf2::Quaternion q(tagPose.Rot().X(),
-                                tagPose.Rot().Y(),
-                                tagPose.Rot().Z(),
-                                tagPose.Rot().W());
+                              tagPose.Rot().Y(),
+                              tagPose.Rot().Z(),
+                              tagPose.Rot().W());
 
             tf2::Matrix3x3 m(q);
             double roll, pitch, currentYaw;
@@ -476,7 +471,7 @@ namespace gazebo
                             ranging_msg.seq = this->sequence;
                             ranging_msg.rss = powerValue;
                             ranging_msg.error_estimation = 0.00393973;
-                            this->gtecUwbPub->publish(ranging_msg);
+                            this->Uwb_Pub->publish(ranging_msg);
                         }
                     }
 
@@ -529,11 +524,12 @@ namespace gazebo
                 }
             }
 
-            this->gtecAnchors->publish(markerArray);
+            this->Anchors_Pub->publish(markerArray);
             this->sequence++;
         }
     }
 
+    /// Set update rate
     void UwbPlugin::SetUpdateRate(double _rate)
     {
         if (_rate > 0.0)
@@ -546,10 +542,11 @@ namespace gazebo
         }
     }
 
+    /// Reset function
     void UwbPlugin::Reset()
     {
-        RCLCPP_INFO(node->get_logger(), "GTEC UWB Plugin RESET");
+        RCLCPP_INFO(node->get_logger(), "UWB Plugin RESET");
         this->lastUpdateTime = common::Time(0.0);
     }
 
-}
+} // namespace gazebo
