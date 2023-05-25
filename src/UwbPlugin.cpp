@@ -133,7 +133,7 @@ namespace gazebo
         std::string topicAnchors = "/uwb_anchors";
   
         this->Anchors_Pub = node->create_publisher<visualization_msgs::msg::MarkerArray>(topicAnchors, qos.get_publisher_qos(topicAnchors, rclcpp::SensorDataQoS().reliable()));     
-        this->Uwb_Pub = node->create_publisher<rosmsgs::msg::Ranging>(topicRanging, qos.get_publisher_qos(topicRanging, rclcpp::SensorDataQoS().reliable()));
+        this->Uwb_Pub = node->create_publisher<rosmsgs::msg::RangingArray>(topicRanging, qos.get_publisher_qos(topicRanging, rclcpp::SensorDataQoS().reliable()));
 
         RCLCPP_INFO(node->get_logger(), "Publishing on topic [%s]", this->Uwb_Pub->get_topic_name());
         RCLCPP_INFO(node->get_logger(), "Publishing on topic [%s]", this->Anchors_Pub->get_topic_name());
@@ -218,7 +218,8 @@ namespace gazebo
             }
 
             visualization_msgs::msg::MarkerArray markerArray;
-            visualization_msgs::msg::MarkerArray interferencesArray;
+            rosmsgs::msg::RangingArray rangingArray;
+            // visualization_msgs::msg::MarkerArray interferencesArray;
 
             int anchor_i = 0;
 
@@ -471,7 +472,8 @@ namespace gazebo
                             ranging_msg.seq = this->sequence;
                             ranging_msg.rss = powerValue;
                             ranging_msg.error_estimation = 0.00393973;
-                            this->Uwb_Pub->publish(ranging_msg);
+                            rangingArray.ranging.push_back(ranging_msg);
+                            //this->Uwb_Pub->publish(ranging_msg);
                         }
                     }
 
@@ -523,7 +525,7 @@ namespace gazebo
                     markerArray.markers.push_back(marker);
                 }
             }
-
+            this->Uwb_Pub->publish(rangingArray);
             this->Anchors_Pub->publish(markerArray);
             this->sequence++;
         }

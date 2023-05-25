@@ -10,7 +10,7 @@ If you use this code for your scientific activities, a citation is appreciated.
 
 ## Requirements
 
-Libraries ```libignition-math6-dev``` and ```libgazebo-dev``` must be installed before building this package.
+Libraries ```ros-humble-gazebo-ros-pkgs```, ```libignition-math6-dev``` and ```libgazebo-dev``` must be installed before building this package.
 
 Also, package ```rosmsgs``` must be present in the same work space. This package can be found here:  [https://github.com/GiacomoCorradini/rosmsgs](https://github.com/GiacomoCorradini/rosmsgs)
 

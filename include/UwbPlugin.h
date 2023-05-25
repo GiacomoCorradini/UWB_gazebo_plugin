@@ -46,6 +46,7 @@ SOFTWARE.
 
 // messages
 #include "rosmsgs/msg/ranging.hpp"
+#include "rosmsgs/msg/ranging_array.hpp"
 #include "geometry_msgs/msg/pose_with_covariance_stamped.hpp"
 #include "visualization_msgs/msg/marker_array.hpp"
 #include "visualization_msgs/msg/marker.hpp"
@@ -714,7 +715,7 @@ namespace gazebo
         std::default_random_engine random_generator;
         
         /// \brief Publish for uwb message
-        rclcpp::Publisher<rosmsgs::msg::Ranging>::SharedPtr Uwb_Pub;
+        rclcpp::Publisher<rosmsgs::msg::RangingArray>::SharedPtr Uwb_Pub;
         rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr Anchors_Pub;
         
         /// \brief Pointer to ROS node
