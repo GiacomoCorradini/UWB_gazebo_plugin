@@ -221,7 +221,7 @@ namespace gazebo
             rosmsgs::msg::RangingArray rangingArray;
             // visualization_msgs::msg::MarkerArray interferencesArray;
 
-            int anchor_i = 0;
+            // int anchor_i = 0;
 
             physics::Model_V models = this->world->Models();
             for (physics::Model_V::iterator iter = models.begin(); iter != models.end(); ++iter)
@@ -473,7 +473,6 @@ namespace gazebo
                             ranging_msg.rss = powerValue;
                             ranging_msg.error_estimation = 0.00393973;
                             rangingArray.ranging.push_back(ranging_msg);
-                            //this->Uwb_Pub->publish(ranging_msg);
                         }
 
                         if (losType!=NLOS)
@@ -481,8 +480,9 @@ namespace gazebo
                             visualization_msgs::msg::Marker marker;
                             marker.header.frame_id = "world";
                             marker.header.stamp = node->now();
-                            marker.id = anchor_i;
-                            anchor_i++;
+                            marker.id = aid;
+                            // marker.id = anchor_i;
+                            // anchor_i++;
                             marker.type = visualization_msgs::msg::Marker::CYLINDER;
                             marker.action = visualization_msgs::msg::Marker::ADD;
                             marker.lifetime.sec = 5;
@@ -526,53 +526,6 @@ namespace gazebo
                             markerArray.markers.push_back(marker);
                         }
                     }
-
-                    // visualization_msgs::msg::Marker marker;
-                    // marker.header.frame_id = "world";
-                    // marker.header.stamp = node->now();
-                    // marker.id = anchor_i;
-                    // anchor_i++;
-                    // marker.type = visualization_msgs::msg::Marker::CYLINDER;
-                    // marker.action = visualization_msgs::msg::Marker::ADD;
-                    // marker.lifetime.sec = 5;
-                    // marker.pose.position.x = anchorPose.Pos().X();
-                    // marker.pose.position.y = anchorPose.Pos().Y();
-                    // marker.pose.position.z = anchorPose.Pos().Z();
-                    // marker.pose.orientation.x = anchorPose.Rot().X();
-                    // marker.pose.orientation.y = anchorPose.Rot().Y();
-                    // marker.pose.orientation.z = anchorPose.Rot().Z();
-                    // marker.pose.orientation.w = anchorPose.Rot().W();
-                    // marker.scale.x = 0.2;
-                    // marker.scale.y = 0.2;
-                    // marker.scale.z = 0.5;
-                    // marker.color.a = 1.0;
-
-                    // if (losType == LOS)
-                    // {
-                    //     marker.color.r = 0.0;
-                    //     marker.color.g = 0.6;
-                    //     marker.color.b = 0.0;
-                    // }
-                    // else if (losType == NLOS_S)
-                    // {
-                    //     marker.color.r = 0.6;
-                    //     marker.color.g = 0.6;
-                    //     marker.color.b = 0.0;
-                    // }
-                    // else if (losType == NLOS_H)
-                    // {
-                    //     marker.color.r = 0.0;
-                    //     marker.color.g = 0.0;
-                    //     marker.color.b = 0.6;
-                    // }
-                    // else if (losType == NLOS)
-                    // {
-                    //     marker.color.r = 0.6;
-                    //     marker.color.g = 0.0;
-                    //     marker.color.b = 0.0;
-                    // }
-
-                    // markerArray.markers.push_back(marker);
                 }
             }
             this->Uwb_Pub->publish(rangingArray);
