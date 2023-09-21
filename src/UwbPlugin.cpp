@@ -423,8 +423,8 @@ namespace gazebo
                         losType = NLOS;
                     }
 
-                    if (losType != NLOS)
-                    {
+                    // if (losType != NLOS)
+                    // {
 
                         int indexScenario = 0;
                         if (losType == NLOS_S)
@@ -463,8 +463,8 @@ namespace gazebo
                         }
                         
 
-                        if (losType!=NLOS)
-                        {
+                        // if (losType!=NLOS)
+                        // {
                             rosmsgs::msg::Ranging ranging_msg;
                             ranging_msg.anchor_id = aidStr;
                             ranging_msg.tag_id = this->tagId;
@@ -473,10 +473,7 @@ namespace gazebo
                             ranging_msg.rss = powerValue;
                             ranging_msg.error_estimation = 0.00393973;
                             rangingArray.ranging.push_back(ranging_msg);
-                        }
-
-                        if (losType!=NLOS)
-                        {
+                        
                             visualization_msgs::msg::Marker marker;
                             marker.header.frame_id = "world";
                             marker.header.stamp = node->now();
@@ -524,8 +521,8 @@ namespace gazebo
                             }
 
                             markerArray.markers.push_back(marker);
-                        }
-                    }
+                    //     }
+                    // }
                 }
             }
             this->Uwb_Pub->publish(rangingArray);
