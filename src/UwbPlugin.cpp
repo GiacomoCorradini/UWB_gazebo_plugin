@@ -219,9 +219,6 @@ namespace gazebo
 
             visualization_msgs::msg::MarkerArray markerArray;
             rosmsgs::msg::RangingArray rangingArray;
-            // visualization_msgs::msg::MarkerArray interferencesArray;
-
-            // int anchor_i = 0;
 
             physics::Model_V models = this->world->Models();
             for (physics::Model_V::iterator iter = models.begin(); iter != models.end(); ++iter)
@@ -423,8 +420,8 @@ namespace gazebo
                         losType = NLOS;
                     }
 
-                    // if (losType != NLOS)
-                    // {
+                    if (losType != NLOS)
+                    {
 
                         int indexScenario = 0;
                         if (losType == NLOS_S)
@@ -463,8 +460,8 @@ namespace gazebo
                         }
                         
 
-                        // if (losType!=NLOS)
-                        // {
+                        if (losType!=NLOS)
+                        {
                             rosmsgs::msg::Ranging ranging_msg;
                             ranging_msg.anchor_id = aidStr;
                             ranging_msg.tag_id = this->tagId;
@@ -478,14 +475,12 @@ namespace gazebo
                             marker.header.frame_id = "world";
                             marker.header.stamp = node->now();
                             marker.id = aid;
-                            // marker.id = anchor_i;
-                            // anchor_i++;
                             marker.type = visualization_msgs::msg::Marker::CYLINDER;
                             marker.action = visualization_msgs::msg::Marker::ADD;
                             marker.lifetime.sec = 5;
                             marker.pose.position.x = anchorPose.Pos().X();
                             marker.pose.position.y = anchorPose.Pos().Y();
-                            marker.pose.position.z = anchorPose.Pos().Z();
+                            marker.pose.position.z = -anchorPose.Pos().Z();
                             marker.pose.orientation.x = anchorPose.Rot().X();
                             marker.pose.orientation.y = anchorPose.Rot().Y();
                             marker.pose.orientation.z = anchorPose.Rot().Z();
@@ -521,8 +516,8 @@ namespace gazebo
                             }
 
                             markerArray.markers.push_back(marker);
-                    //     }
-                    // }
+                        }
+                    }
                 }
             }
             this->Uwb_Pub->publish(rangingArray);
