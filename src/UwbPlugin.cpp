@@ -480,7 +480,7 @@ namespace gazebo
                             marker.lifetime.sec = 5;
                             marker.pose.position.x = anchorPose.Pos().X();
                             marker.pose.position.y = anchorPose.Pos().Y();
-                            marker.pose.position.z = -anchorPose.Pos().Z();
+                            marker.pose.position.z = anchorPose.Pos().Z();
                             marker.pose.orientation.x = anchorPose.Rot().X();
                             marker.pose.orientation.y = anchorPose.Rot().Y();
                             marker.pose.orientation.z = anchorPose.Rot().Z();
